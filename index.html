@@ -381,24 +381,30 @@
         <h2 class="section-h2" style="margin-bottom:0.6rem">Vamos <em>conversar?</em></h2>
         <p class="section-desc" style="margin-bottom:2rem">Preencha o formulário e entraremos em contato em breve.</p>
 
-        <div class="form-group">
-          <label class="form-label" for="nome">Nome completo</label>
-          <input class="form-input" type="text" id="nome" placeholder="Seu nome">
-        </div>
-        <div class="form-group">
-          <label class="form-label" for="email">E-mail</label>
-          <input class="form-input" type="email" id="email" placeholder="seu@email.com">
-        </div>
-        <div class="form-group">
-          <label class="form-label" for="msg">Mensagem</label>
-          <textarea class="form-textarea" id="msg" placeholder="Como podemos ajudá-lo?"></textarea>
-        </div>
+        <form id="contactForm" onsubmit="enviarWhatsApp(event)">
+          <div class="form-group">
+            <label class="form-label" for="nome">Nome completo</label>
+            <input class="form-input" type="text" id="nome" placeholder="Seu nome" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="email">E-mail</label>
+            <input class="form-input" type="email" id="email" placeholder="seu@email.com" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="telefone">Telefone</label>
+            <input class="form-input" type="tel" id="telefone" placeholder="(96) 99999-9999">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="msg">Mensagem</label>
+            <textarea class="form-textarea" id="msg" placeholder="Como podemos ajudá-lo?" required></textarea>
+          </div>
 
-        <button class="btn-submit" href="https://wa.me/5596981455949">Enviar mensagem</button>
+          <button type="submit" class="btn-submit">Enviar mensagem</button>
+        </form>
 
-        <a href="https://wa.me/5596981455949" class="whatsapp-link">
+        <a href="https://wa.me/5596981455949" class="whatsapp-link" target="_blank">
           <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 1.41.37 2.73 1.01 3.88L0 16l4.25-1.11A7.96 7.96 0 008 16c4.42 0 8-3.58 8-8s-3.58-8-8-8zm4.16 11.12c-.17.49-1 .94-1.38.99-.35.05-.8.07-1.29-.08-.3-.09-.68-.22-1.17-.43-2.06-.89-3.4-2.98-3.5-3.12-.1-.14-.8-1.07-.8-2.04 0-.97.5-1.44.68-1.64.18-.2.38-.24.51-.24l.36.01c.12 0 .28-.04.43.33l.6 1.49c.05.12.09.26.02.41l-.22.32-.31.38c-.1.1-.21.22-.09.43.12.21.54.9 1.16 1.46.8.72 1.48.94 1.69 1.05.21.1.33.09.45-.05l.62-.73c.12-.15.24-.12.41-.07l1.47.69c.17.08.28.12.32.2.03.07.03.43-.14.92z"/></svg>
-          Ou chame direto no whatsapp
+          Ou chame direto no WhatsApp
         </a>
       </div>
 
@@ -498,6 +504,43 @@ depTimer = setInterval(nextDep, 5000);
 document.getElementById('depPrev').addEventListener('click', () => { clearInterval(depTimer); moveDep(depIdx - 1); depTimer = setInterval(nextDep, 5000); });
 document.getElementById('depNext').addEventListener('click', () => { clearInterval(depTimer); nextDep(); depTimer = setInterval(nextDep, 5000); });
 depDots.forEach((d, i) => d.addEventListener('click', () => { clearInterval(depTimer); moveDep(i); depTimer = setInterval(nextDep, 5000); }));
+
+  // Enviar formulário via WhatsApp
+function enviarWhatsApp(event) {
+  event.preventDefault(); 
+
+  const nome = document.getElementById('nome').value.trim();
+  const email = document.getElementById('email').value.trim();
+  const telefone = document.getElementById('telefone').value.trim();
+  const mensagem = document.getElementById('msg').value.trim();
+  
+  if (!nome || !email || !mensagem) {
+    alert('Por favor, preencha todos os campos obrigatórios (Nome, E-mail e Mensagem).');
+    return false;
+  }
+  
+
+  const numeroClinica = '5596981455949';
+
+  let textoWhatsApp = `*Nova mensagem do site* 🏥\n\n`;
+  textoWhatsApp += `👤 *Nome:* ${nome}\n`;
+  textoWhatsApp += `📧 *E-mail:* ${email}\n`;
+  
+  if (telefone) {
+    textoWhatsApp += `📱 *Telefone:* ${telefone}\n`;
+  }
+  
+  textoWhatsApp += `\n💬 *Mensagem:*\n${mensagem}\n`;
+  textoWhatsApp += `\n_Enviado pelo formulário do site_ ✨`;
+  
+
+  const textoCodificado = encodeURIComponent(textoWhatsApp);
+  const linkWhatsApp = `https://wa.me/${numeroClinica}?text=${textoCodificado}`;
+  
+  window.open(linkWhatsApp, '_blank');
+  document.getElementById('contactForm').reset();
+  console.log('✅ Formulário enviado com sucesso!');
+}
 
 document.querySelector('.footer-bottom').innerHTML = 
     `© ${new Date().getFullYear()} Clínica Fono Habilidades Multiterapias - Todos os direitos reservados. <br>
